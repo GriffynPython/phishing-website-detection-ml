@@ -1,4 +1,4 @@
-🛡️ Phishing Website Detection using Machine Learning & FastAPI
+## 🛡️ Phishing Website Detection using Machine Learning & FastAPI
 📌 Overview
 
 Phishing websites are a major cybersecurity threat used to steal sensitive information such as credentials and financial data.
