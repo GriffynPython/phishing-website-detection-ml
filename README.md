@@ -1,61 +1,170 @@
-# Phishing Website Detection using Machine Learning
+🛡️ Phishing Website Detection using Machine Learning & FastAPI
+📌 Overview
 
-## Overview
-This project focuses on detecting phishing websites using machine learning techniques applied to URL and webpage-based features. The goal is to build a **security-aware model** that minimizes missed phishing attempts, which are more critical than false alarms in real-world cybersecurity scenarios.
+Phishing websites are a major cybersecurity threat used to steal sensitive information such as credentials and financial data.
 
-The project is being developed incrementally, following a **structured learning plan toward AI Engineering**.
+This project builds and deploys a machine learning–based phishing detection system using URL-based features and exposes it as a REST API using FastAPI.
 
----
+The focus of this project is not only on model accuracy, but also on real-world deployment, inference logic, and robustness.
+📊 Dataset
 
-## Dataset
+    Source: Kaggle – Web Page Phishing Dataset
 
-**Source:** Kaggle – Web Page Phishing Dataset  
+    Target Variable:
 
-**Description:**  
-The dataset contains extracted URL and webpage-based features commonly used for phishing detection.
+        1 → Phishing
 
-**Target Variable:**
-- `phishing = 1` → Phishing website  
-- `phishing = 0` → Legitimate website  
+        0 → Legitimate
 
----
+🔍 Features Used (19)
 
-## Models Implemented
+The model uses engineered URL-based features, including:
 
-### Day 1 – Baseline Model
-- **Model:** Decision Tree Classifier  
-- **Accuracy:** ~88.3%  
-- **Purpose:** Establish a baseline for phishing detection  
+    URL length
 
----
+    Number of dots, hyphens, slashes
 
-### Day 2 – Model Comparison & Evaluation
-To improve performance, a **Random Forest model with class-weight balancing** was trained and compared with the baseline Decision Tree.
+    Presence of special characters (@, ?, =, %, $, etc.)
 
-#### Models Compared
-- Decision Tree Classifier  
-- Random Forest Classifier (`class_weight='balanced'`)  (**Accuracy**: 88.9%)
+    Redirection indicators
 
-#### Evaluation Approach
-Rather than relying only on accuracy, **confusion matrices** were analyzed to prioritize reducing **false negatives**, since missed phishing websites pose higher security risks.
+These features capture common structural patterns found in phishing URLs.
+🧠 Machine Learning Models
 
-#### Confusion Matrix Summary
-- **Decision Tree**
-  - False Negatives: **1393**
-- **Random Forest (Balanced)**
-  - False Negatives: **890**
+Two models were trained and evaluated:
 
-#### Key Insight
-The Random Forest model had better accuracy among the two models and the **Random Forest model significantly reduced false negatives**. This makes it more suitable for real-world cybersecurity applications where **recall for malicious activity is critical**.
+    Decision Tree Classifier (baseline)
 
-✅ **Final Model Selected:** Random Forest Classifier (Balanced)
+    Random Forest Classifier (final model)
 
----
+📈 Model Evaluation
 
-## Tools & Technologies
-- Python  
-- pandas  
-- scikit-learn  
-- Jupyter Notebook / Kaggle Notebook  
+    Train–test split used for validation
 
+    Metrics analyzed:
+
+        Accuracy
+
+        Confusion Matrix
+
+        Class-wise performance
+
+📝 Observations
+
+    Random Forest outperformed the baseline model
+
+    Class imbalance required careful evaluation
+
+    Some low-risk synthetic inputs were misclassified due to dataset distribution
+
+    This was mitigated using probability-based inference instead of hard predictions
+
+⚙️ Inference Logic
+
+Instead of relying solely on class labels:
+
+    The model uses predict_proba
+
+    A probability threshold of 0.6 is applied
+
+📌 Decision Rule
+
+    Probability ≥ 0.6 → Phishing
+
+    Probability < 0.6 → Legitimate
+
+This approach reduces false positives, a critical requirement in cybersecurity systems.
+🚀 API Deployment (FastAPI)
+
+The trained model is deployed as a RESTful service using FastAPI.
+▶️ Run Locally
+
+pip install -r requirements.txt
+uvicorn app:app --reload --port 8001
+
+📡 Available Endpoints
+✅ Health Check
+
+GET /health
+
+Response:
+
+{
+  "status": "ok"
+}
+
+🔍 Prediction
+
+POST /predict
+
+Sample Response:
+
+{
+  "prediction": "Phishing",
+  "phishing_probability": 0.742
+}
+
+API Features
+
+    Input validation using Pydantic
+
+    Probability-based predictions
+
+    Logging for monitoring and debugging
+
+    Health endpoint for service monitoring
+
+🧪 Testing
+
+    Tested via Swagger UI (/docs)
+
+    Verified predictions using real dataset rows
+
+    Confirmed expected behavior for both phishing and legitimate samples
+
+    Screenshots of API testing are available in the screenshots/ directory
+
+📁 Project Structure
+
+phishing-detection/
+├── app.py
+├── requirements.txt
+├── README.md
+├── screenshots/
+│   ├── swagger_predict.png
+│   └── health_endpoint.png
+
+    Note:
+    The trained model file (phishing_model.pkl) is not included in the repository due to size limitations.
+    It can be generated by running the model training notebook.
+
+🧠 Key Learnings
+
+    Importance of matching training and deployment environments
+
+    Handling model serialization compatibility issues
+
+    Designing production-style ML APIs
+
+    Using probability thresholds instead of raw predictions
+
+    Understanding real-world data vs synthetic assumptions
+
+🔮 Future Improvements
+
+    Add Docker support for containerized deployment
+
+    Log predictions and analyze patterns using SIEM tools (e.g., Splunk)
+
+    Feature importance visualization
+
+    Integration with browser extensions or security tools
+
+    Online learning or periodic model retraining
+
+🎯 Conclusion
+
+This project demonstrates the end-to-end lifecycle of an AI-powered cybersecurity system — from data and modeling to deployment and monitoring.
+
+It emphasizes practical AI engineering decisions rather than just model performance.
 ---
